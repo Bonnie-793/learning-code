@@ -3,133 +3,194 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="src/styles.css" />
-    <title>My weather application</title>
+    <title>Weather App</title>
+    <link rel="stylesheet" href="styles.css" />
     <style>
       body {
         background-color: #f9f7fe;
-        font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+        font-family: "Gill Sans", "Gill Sans MT", Calibri, "Trebuchet MS",
+          sans-serif;
       }
       input {
         align-items: center;
       }
-      header{
-        padding-bottom:30px;
+      header {
+        padding-bottom: 30px;
       }
-      main{
-        padding:30px;
+      main {
+        padding: 30px;
       }
       h1 {
-      font-size:38px;
-      font-weight:900;
-      margin:0;
+        font-size: 38px;
+        font-weight: 900;
+        margin: 0;
       }
       strong {
         color: crimson;
       }
-      footer{
+      footer {
         text-align: center;
         padding-top: 16px;
-        color:rgba(128, 128, 128, 0.5);
+        color: rgba(128, 128, 128, 0.5);
       }
       .placeholder {
         display: inline;
         align-items: center;
-        
+
         background-color: #f9f7fe;
-        border:none;
+        border: none;
         border-radius: 4px;
         font-size: 16px;
         width: 75%;
         padding: 20px;
       }
       .submitButton {
-        
-        margin-left: 5px ;
+        margin-left: 5px;
         display: inline;
         color: white;
         font-size: 16px;
         background-color: blueviolet;
         border-radius: 4px;
         padding: 18px;
-        border:none;
+        border: none;
       }
-     
+
       .current-weather {
         display: flex;
         justify-content: space-between;
       }
       .temperature {
         font-size: 48px;
-        
       }
-      .temperature-icon{
-        position:relative;
-        top:-8px;
+      .temperature-icon {
+        position: relative;
+        top: -8px;
         font-size: 40px;
-        margin-right:10px;
+        margin-right: 10px;
       }
-      .temperature-value{
-        font-size:80px;
+      .temperature-value {
+        font-size: 80px;
         font-weight: bold;
       }
-      .temperature-unit{
-        position:relative;
+      .temperature-unit {
+        position: relative;
         font-size: 28px;
-        top:-38px;
+        top: -38px;
       }
-      .container{
-           background-color: #ffff; 
-           padding:40px;
-           border-radius:20px;
-           max-width:600px;
-           margin:60px auto;
+      .container {
+        background-color: #ffff;
+        padding: 40px;
+        border-radius: 20px;
+        max-width: 600px;
+        margin: 60px auto;
       }
-      .current-weather-details{
-        color:rgba(128, 128, 128, 0.5);
+      .current-weather-details {
+        color: rgba(128, 128, 128, 0.5);
         font-size: 16px;
         font-weight: 400;
-        line-height:24px;
+        line-height: 24px;
       }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
   </head>
   <body>
     <div class="container">
       <header>
-      <form>
-        <input
-          type="search"
-          placeholder="Enter a city.."
-          class="placeholder"
-          required
-        />
-        <input type="submit" value="Search" class="submitButton" />
-      </form>
-    </header>
-    <main>
-      <div class="current-weather">
-        <div>
-          <h1>Paris</h1>
-          <p class="current-weather-details">
-            Saturday 15:32, moderate rain <br />
-            Humidity: <strong>87%</strong>, Wind: <strong>7.2km/h</strong>
-          </p>
-        </div>
-        <div class="temperature">
-          <span class="temperature-icon">☀️</span>
-           <span class="temperature-value">14</span>
-           <span class="temperature-unit">°C</span>
+        <form id="search-form">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Enter a city.."
+            class="placeholder"
+            required
+          />
+          <button
+            type="submit"
+            value="Search"
+            class="submitButton"
+            id="search-button"
+          >
+            Search
+          </button>
+        </form>
+      </header>
+      <main>
+        <div class="current-weather">
+          <div>
+            <h1><div id="city-name">Paris</div></h1>
+            <p class="current-weather-details">
+              <span class="current-date"></span>,<span id="weather-description"
+                >moderate rain</span
+              >
+              <br />
+              Humidity: <strong id="humidity">87%</strong>, Wind:
+              <strong id="wind-speed">7.2km/h</strong>
+            </p>
           </div>
-      </div>
-    </main>
-    <footer>
-      <p>
-        This project was coded by
-        <a href="https://www.shecodes.io/graduates/137159-bonolo-masilela" target="_blank">Bonolo Masilela</a> and is
-        <a href="#" target="_blank"> on GitHub</a> and
-        <a href="#" target="_blank">hosted on Netlify</a>
-      </p>
-    </footer>
-  </div>
+          <div class="temperature">
+            <span class="temperature-icon">☀️</span>
+            <span class="temperature-value" id="temperature-value">14</span>
+            <span class="temperature-unit" id="temperature-unit">°C</span>
+          </div>
+        </div>
+      </main>
+      <footer>
+        <p>
+          This project was coded by
+          <a
+            href="https://www.shecodes.io/graduates/137159-bonolo-masilela"
+            target="_blank"
+            >Bonolo Masilela</a
+          >
+          and is <a href="#" target="_blank"> on GitHub</a> and
+          <a href="#" target="_blank">hosted on Netlify</a>
+        </p>
+      </footer>
+    </div>
+    <script>
+      function search(event) {
+        event.preventDefault();
+        let searchInputElement = document.querySelector("#search-input");
+        let cityElement = document.querySelector("#city-name");
+        cityElement.innerHTML = searchInputElement.value;
+        let city = searchInputElement.value;
+        let apiKey = "6d7d9oa0da68bbebtf8a4d33aeb9696e";
+        let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}`;
+
+        axios
+          .get(apiUrl)
+          .then(displayWeatherInfo)
+          .catch((error) => {
+            console.error("Error fetching weather data:", error);
+            alert("Sorry, we couldn't fetch the weather data.");
+          });
+      }
+
+      function displayWeatherInfo(response) {
+        let cityElement = document.querySelector("#city-name");
+        let weatherDescriptionElement = document.querySelector(
+          "#weather-description"
+        );
+        let humidityElement = document.querySelector("#humidity");
+        let windSpeedElement = document.querySelector("#wind-speed");
+        let temperatureValueElement =
+          document.querySelector("#temperature-value");
+
+        let city = response.data.city;
+        let weatherDescription = response.data.condition.description;
+        let humidity = response.data.temperature.humidity;
+        let windSpeed = response.data.wind.speed;
+        let temperature = Math.round(response.data.temperature.current);
+
+        cityElement.innerHTML = `${city}`;
+        weatherDescriptionElement.innerHTML = `${weatherDescription}`;
+        humidityElement.innerHTML = `${humidity}%`;
+        windSpeedElement.innerHTML = `${windSpeed}km/h`;
+        temperatureValueElement.innerHTML = `${temperature}`;
+      }
+
+      let searchForm = document.querySelector("#search-form");
+      searchForm.addEventListener("submit", search);
+    </script>
   </body>
 </html>
